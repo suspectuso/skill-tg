@@ -6,7 +6,7 @@ build production Telegram bots the way this codebase does: **aiogram 3**, premiu
 a unified **invoice + payment-webhook** model, **RU/EN localization**, and **cloning** another
 bot's UI 1-to-1 through a Telethon user session (plus using that session to QA your own bot).
 
-Reference implementation: **[tg-shop-kit](https://github.com/suspectuso/tg-shop-kit)**.
+Reference implementation: **[TelegramShop](https://github.com/suspectuso/TelegramShop)**.
 
 ## Install
 Copy into your Claude Code skills directory:
