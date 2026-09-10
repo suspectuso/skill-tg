@@ -1,31 +1,12 @@
 ---
 name: skill-tg
 description: >
-  Building production Telegram bots — aiogram 3 and Go + telebot.v3. Covers premium (custom
-  animated) emoji via Bot API 9.4, colored inline buttons, rich HTML and Bot API 10.1 Rich
-  Messages (`heading`/`table`/`slideshow`/`details`, edit-in-place), inline mode with OG-preview
-  big photos, WebApp Mini-App loader (top-level redirect to bypass webview cookie
-  partitioning) plus server-side `initData` HMAC verification, file_id media cache and
-  classic media groups (albums), Telegram Stars (XTR) native payments with
-  `pre_checkout_query`+`successful_payment`, a unified invoice + payment-webhook model with
-  HMAC signature verification for CryptoBot / xRocket / OxaPay / YooKassa / platega, the full
-  closed-channel subscription flow (kick+unban, expiry warnings, referrals, promo codes),
-  mass broadcasts with rate limiting and resume-safe idempotency, in-memory FSM (aiogram
-  MemoryStorage / Go state map) for text-input flows, deep-links / `?start=<payload>` /
-  `?startapp=<payload>` and `setMyCommands` scope sync, groups and supergroup / forum-topic
-  administration, join-time captcha + trust-ramp + content-filter moderation for community
-  bots, webhook vs long-polling trade-offs with `secret_token` and `getWebhookInfo` alerting,
-  Prometheus metrics and structured JSON/logfmt logs with `update_id`/`user_id` context, a
-  self-hosted Bot API server for >50MB uploads / >20MB downloads, RU/EN/UA localization,
-  cloning a competitor bot's UI through a Telethon user session, running E2E tests in CI
-  against a real bot with the same session, and the mac-tar/rsync deploy hazards that eat
-  productions. Invoke when building, extending, or debugging a Telegram
-  shop/service/community bot; when a task mentions custom/premium emoji, colored buttons,
-  rich messages, inline mode, Mini App / initData validation, file_id caching, media groups /
-  albums, Stars payments, webhook signature verification, FSM flows, subscription gating,
-  broadcasts / mass messaging, deep links / start payloads, BotFather commands, forum topics,
-  group moderation / captcha / anti-spam, webhook vs polling, metrics / observability,
-  self-hosted Bot API, or reconning another bot's screens.
+  Build, extend, or debug a Telegram bot (aiogram 3 / Go telebot.v3): premium custom emoji
+  (Bot API 9.4), colored inline buttons, rich HTML + Rich Messages (10.1+), Telegram Stars and
+  webhook payments, closed-channel subscriptions, broadcasts, FSM flows, moderation,
+  groups/forum-topics, localization, deploy, and cloning or QA-ing a bot via a Telethon session.
+  Invoke on any Telegram bot task, or when one mentions custom/premium emoji, colored buttons,
+  rich messages, Stars or webhook payments, subscriptions, broadcasts, or reconning another bot.
 ---
 
 # skill-tg — Telegram bot building kit
@@ -48,9 +29,11 @@ Requirement: **the bot-owner account must have Telegram Premium** to send custom
 (this is NOT the old Fragment rule). Two places they appear:
 
 1. **In message text** (HTML parse mode): wrap the glyph in `<tg-emoji emoji-id="ID">😀</tg-emoji>`.
-   Pattern (`emoji_map.premiumize`): `html.escape(text)` first, then replace known glyphs with
-   their `<tg-emoji>` wrapper. Keep a `GLYPH_TO_ID` dict `{ "⭐": 5848259999763011021, ... }`.
-   A `PREMIUM_EMOJI=off` env fallback should skip wrapping → plain unicode (looks the same, no animation).
+   Keep a `GLYPH_TO_ID` dict `{ "⭐": 5848259999763011021, ... }` and a `premiumize(text, enabled)`
+   that replaces known glyphs with their `<tg-emoji>` wrapper (and returns text unchanged when
+   `PREMIUM_EMOJI=off` → plain unicode). **`premiumize` must NOT call `html.escape` on the whole
+   text** — see the escaping rule below. `PREMIUM_EMOJI=off` is the default until the owner account
+   has Premium and you hold real ids.
 2. **On inline buttons**: `InlineKeyboardButton(text=..., callback_data=..., icon_custom_emoji_id="ID")`.
 
 **Colored buttons** (same Bot API 9.4): `InlineKeyboardButton(..., style="success" | "primary" | "danger")`.
@@ -64,10 +47,20 @@ Wrap your button factory: `cb(text, data, style=None, icon=None)` / `url(text, l
 **Own an emoji pack** (so you don't leak the source pack's name): download the docs and re-publish.
 See `reference/emoji-pack.md`.
 
-## Rich text (HTML parse mode)
-- `<b>`, `<i>`, `<code>`, `<a href>`, and **`<blockquote expandable>…</blockquote>`** (collapsible).
-  Build blockquote/`<tg-emoji>` **after** `html.escape` so the tags survive.
-- Monospace copy-links: `<code>t.me/bot?start=…</code>`.
+## Rich text (HTML parse mode) — the escaping rule
+Tags: `<b>`, `<i>`, `<code>`, `<a href>`, and **`<blockquote expandable>…</blockquote>`** (collapsible).
+Monospace copy-links: `<code>t.me/bot?start=…</code>`.
+
+**The rule that prevents the most common visible bug (literal `<b>` in the chat):** treat your
+*templates as trusted HTML* — never `html.escape` a whole message that contains your own tags, or
+they render as literal text. Escape **only the dynamic values you interpolate** (usernames, titles,
+user input), then emoji-wrap. Canonical pipeline:
+```python
+def render(template, **values):
+    safe = {k: html.escape(str(v)) for k, v in values.items()}   # escape interpolated values only
+    return premiumize(template.format(**safe), PREMIUM_EMOJI)     # template keeps <b>/<code>/<blockquote>
+```
+Full pattern + a copy-paste `emoji_map.py`/`texts.py`: `reference/premium-emoji.md`.
 
 ## Rich Messages (Bot API 10.1) — document-grade content, edit-in-place
 When HTML parse mode isn't enough (tables, swipeable carousels, collapsible sections, media
@@ -364,6 +357,8 @@ ONLY in server `.env` (git-ignored); never commit tokens. Some servers drop SSH 
 retry loop with `-o ConnectTimeout`. Verify: `journalctl -u <svc> -n 40 --no-pager`.
 
 ## Gotchas cheat-sheet
+- **Literal `<b>` showing in the chat** = you `html.escape`d a template that contains your own
+  tags. Escape only interpolated values, never the whole template (see the Rich text rule).
 - Toggle visibility with `el.hidden`, never inline display, in any web artifact you build for it.
 - `KeyboardButtonRow` is not iterable — use `row.buttons`.
 - `b.data` is already bytes — don't `.encode()`.
@@ -424,6 +419,11 @@ becomes `blockquote` + `blocks`; a bare string in a text array is literal text, 
 Full verified schema + Go-specific traps: `reference/go-telebot.md` and `reference/rich-messages.md`.
 
 ## Reference files
+
+**Start here (scaffolding)**
+- `reference/minimal-shop.md` — copy-paste `/start → catalog → product card → Stars invoice`
+  skeleton with the correct render/escape pattern (templates keep `<b>`, values are escaped) and
+  the button factory. Build from this first, then pull the deep-dives below for each piece.
 
 **Emoji & rich content**
 - `reference/premium-emoji.md` — `premiumize()`, `GLYPH_TO_ID`, button factory, id-finding.
