@@ -24,6 +24,19 @@ verified schemas live in `reference/`.
   `keyboards.py` (inline kb) · `texts.py`+`texts_ru/en.py` (localized strings) ·
   `emoji_map.py` (premium emoji) · `*_api.py` (each upstream) · `publish_legal.py` (telegra.ph docs).
 
+## Screen design bar — do this on every screen
+A bot has no CSS; its design is layout + hierarchy + microcopy + emoji-as-icons + button
+color/rows. Apply this or the bot reads as a debug dump, not a product:
+- Structure: `<icon> <b>Title</b>` line → 1–2 line body → **blank line** → buttons. Never a bare
+  paragraph with buttons stuck under it.
+- **Bold the title and key numbers only** (`<b>`); long content → `<blockquote expandable>`.
+- Emoji are **icons, one per concept, reused** (⭐ Stars, 🛍 catalog, 💳 pay, ✅ success) — not confetti.
+- Buttons by role: **exactly one `success`** (the main action) per screen; `danger` for back-out/cancel;
+  `primary` for neutral nav. Primary action = its own full-width row; nav (Назад/Главная) = last row.
+- Consistent terms + emoji across all screens. Empty/error states get a friendly line + a way forward.
+
+Full checklist + row/color rules: **`reference/design-and-ux.md`** — apply before finishing any screen.
+
 ## Premium (custom) emoji — Bot API 9.4
 Requirement: **the bot-owner account must have Telegram Premium** to send custom emoji
 (this is NOT the old Fragment rule). Two places they appear:
@@ -424,6 +437,9 @@ Full verified schema + Go-specific traps: `reference/go-telebot.md` and `referen
 - `reference/minimal-shop.md` — copy-paste `/start → catalog → product card → Stars invoice`
   skeleton with the correct render/escape pattern (templates keep `<b>`, values are escaped) and
   the button factory. Build from this first, then pull the deep-dives below for each piece.
+- `reference/design-and-ux.md` — the screen design bar: layout, text hierarchy, microcopy, emoji
+  as icons, button color roles + row composition, states, and a per-screen quality checklist.
+  Apply on every screen so the bot looks intentional, not default.
 
 **Emoji & rich content**
 - `reference/premium-emoji.md` — `premiumize()`, `GLYPH_TO_ID`, button factory, id-finding.
