@@ -1,0 +1,14 @@
+{
+  "name": "skill-tg",
+  "description": "Agent skill for building production Telegram bots (aiogram 3 and Go/telebot): premium emoji, colored buttons, Rich Messages, payments, subscriptions, moderation, localization, Telethon recon/QA.",
+  "owner": { "name": "suspectuso" },
+  "plugins": [
+    {
+      "name": "tg-bot-kit",
+      "source": "./",
+      "description": "Full Telegram-bot building playbook: premium emoji (Bot API 9.4), colored buttons, rich HTML + Rich Messages, Stars + webhook payments, subscriptions, broadcasts, moderation, groups/topics, localization, recon/QA. Reference impl: TelegramShop.",
+      "version": "1.0.0",
+      "license": "MIT"
+    }
+  ]
+}
