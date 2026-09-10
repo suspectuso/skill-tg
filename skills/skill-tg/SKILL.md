@@ -28,7 +28,7 @@ description: >
   self-hosted Bot API, or reconning another bot's screens.
 ---
 
-# tg-bot-kit — Telegram bot building kit
+# skill-tg — Telegram bot building kit
 
 Distilled from building production Telegram bots on two stacks: **aiogram 3 + Python** and
 **Go + telebot.v3**. Same tricks, different mechanics — every modern Bot API surface (Bot API
