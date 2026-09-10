@@ -53,8 +53,6 @@ Then just ask, e.g. *"build a Telegram shop bot with premium emoji and Stars pay
 
 Run `skills/tg-bot-kit/check.sh` before contributing — checks broken links, orphan files, and private-data leaks.
 
-### Bundled Rich Messages (Bot API 10.2) skills
-Adapted from [`serejaris/telegram-skills`](https://github.com/serejaris/telegram-skills) (MIT):
 
 | Skill | What it does |
 |---|---|
