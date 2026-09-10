@@ -36,8 +36,10 @@ cp -r skills/* your-project/.claude/skills/
 ```
 Then just ask, e.g. *"build a Telegram shop bot with premium emoji and Stars payments"*.
 
-## What's inside (`skills/tg-bot-kit/`)
-`SKILL.md` — the top-level playbook. `reference/` — 25 deep-dives:
+## What's inside
+
+### `skills/tg-bot-kit/` — the top-level playbook
+`SKILL.md` + `reference/` — 25 deep-dives:
 
 | Area | Files |
 |---|---|
@@ -51,10 +53,19 @@ Then just ask, e.g. *"build a Telegram shop bot with premium emoji and Stars pay
 
 Run `skills/tg-bot-kit/check.sh` before contributing — checks broken links, orphan files, and private-data leaks.
 
-## Related
-For a focused, deep dive on **Bot API 10.2 Rich Messages** specifically (streaming, digests, media
-bindings), see [`serejaris/telegram-skills`](https://github.com/serejaris/telegram-skills) (MIT) —
-complementary to this broader kit.
+### Bundled Rich Messages (Bot API 10.2) skills
+Adapted from [`serejaris/telegram-skills`](https://github.com/serejaris/telegram-skills) (MIT):
+
+| Skill | What it does |
+|---|---|
+| [`tg-rich-messages`](skills/tg-rich-messages/) | Core reference: markup, outgoing block JSON, media bindings and uploads, preflight, limits, raw HTTP sending |
+| [`tg-markdown-to-rich`](skills/tg-markdown-to-rich/) | Convert Markdown into a rich message and bind `file_id`, URL, or uploaded media |
+| [`tg-rich-streaming`](skills/tg-rich-streaming/) | Stream LLM output into a chat: draft animation, thinking block, mandatory finalization |
+| [`tg-rich-digest`](skills/tg-rich-digest/) | Digest and channel-article patterns: flat layout, preview + collapsed full version, media as evidence, preflight gate |
+
+### Reference
+- [`reference/rich-messages-spec.md`](reference/rich-messages-spec.md) — full extracted spec: every type, every field, all limits (Bot API 10.2)
+- Official: [Bot API docs](https://core.telegram.org/bots/api) · [changelog](https://core.telegram.org/bots/api-changelog) · demo bot [@RichTextDemoBot](https://t.me/RichTextDemoBot)
 
 ## Contributing
 Patterns, not content — see [CONTRIBUTING.md](CONTRIBUTING.md). Keep it clean: no secrets, IPs,
