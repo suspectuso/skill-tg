@@ -1,10 +1,10 @@
 {
-  "name": "tg-bot-kit",
-  "description": "Building production Telegram bots — aiogram 3 and Go/telebot: premium emoji (Bot API 9.4), colored buttons, rich HTML and Rich Messages (10.1+), Stars + webhook payments, closed-channel subscriptions, broadcasts, moderation, groups/topics, localization, Telethon recon/QA, observability, testing. Bundled Rich Messages skills (10.2): tg-rich-messages, tg-markdown-to-rich, tg-rich-streaming, tg-rich-digest.",
-  "version": "1.1.0",
+  "name": "skill-tg",
+  "description": "Building production Telegram bots — aiogram 3 and Go/telebot: premium custom emoji (Bot API 9.4), colored inline buttons, rich HTML and Rich Messages (10.1+), Telegram Stars + a unified invoice/webhook payment model, closed-channel subscriptions, broadcasts, moderation, groups/forum-topics, localization, Telethon recon/QA, observability, testing, deploy.",
+  "version": "1.2.0",
   "author": { "name": "suspectuso" },
   "homepage": "https://github.com/suspectuso/skill-tg",
   "repository": "https://github.com/suspectuso/skill-tg",
   "license": "MIT",
-  "keywords": ["telegram", "bot-api", "aiogram", "telebot", "premium-emoji", "colored-buttons", "rich-messages", "rich-messages-10.2", "streaming", "digest", "markdown", "payments", "subscriptions", "localization"]
+  "keywords": ["telegram", "bot-api", "aiogram", "telebot", "premium-emoji", "colored-buttons", "rich-messages", "payments", "subscriptions", "broadcasts", "moderation", "localization"]
 }

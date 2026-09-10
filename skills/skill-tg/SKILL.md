@@ -1,5 +1,5 @@
 ---
-name: tg-bot-kit
+name: skill-tg
 description: >
   Building production Telegram bots — aiogram 3 and Go + telebot.v3. Covers premium (custom
   animated) emoji via Bot API 9.4, colored inline buttons, rich HTML and Bot API 10.1 Rich
