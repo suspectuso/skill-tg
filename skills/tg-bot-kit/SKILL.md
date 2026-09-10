@@ -496,3 +496,7 @@ Full verified schema + Go-specific traps: `reference/go-telebot.md` and `referen
   `success` per screen, `danger` reserved for Back), row layout, premium-emoji composition
   rules, Rich-Messages screen structure, collapsing long text (expandable blockquote vs
   details), and a symptom→cause table of common Bot API mistakes.
+- `reference/link-preview-control.md` — `LinkPreviewOptions`: disable, prefer small/large,
+  pick which URL to preview, show above/below text.
+- `reference/preview-image-server.md` — serving OG-preview images so links render a big photo
+  (crawler needs a public HTTPS URL; local dev via ngrok / cloudflared).
