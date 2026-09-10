@@ -37,13 +37,6 @@ inline/reply keyboards, tables, navigation & flows, rich media, streaming, local
 limits & splitting, security & escaping, testing playbook, the Rich Messages spec, SDK
 compatibility, and more. Skills pull only what a task needs.
 
-## Credits
-
-- The Rich Messages 10.2 skills (`tg-rich-messages`, `tg-markdown-to-rich`, `tg-rich-streaming`,
-  `tg-rich-digest`) are adapted from **[serejaris/telegram-skills](https://github.com/serejaris/telegram-skills)** (MIT).
-- Much of the bot UI/UX reference set is adapted from **[hlibsuslov/telegram-bot-ui](https://github.com/hlibsuslov/telegram-bot-ui)** (MIT).
-- `tg-bot-kit` and this packaging by **suspectuso**.
-
 ## Contributing
 
 Patterns, not content — see [CONTRIBUTING.md](CONTRIBUTING.md). Keep it clean: no tokens, IPs,
