@@ -2,14 +2,15 @@
 name: skill-tg
 description: >
   Builds, extends, and debugs production Telegram bots (aiogram 3 / Go telebot.v3): premium
-  custom emoji (Bot API 9.4), colored inline buttons, rich HTML + Rich Messages (10.1+),
-  Telegram Stars and webhook payments, closed-channel subscriptions, broadcasts, in-memory FSM
-  flows, moderation, groups/forum-topics, localization, deploy, and cloning or QA-ing a bot via
-  a Telethon session. Use this skill for ANY Telegram bot task — building a bot or shop, a
-  /start or catalog screen, an inline keyboard, formatting a message, or wiring payments — and
-  whenever the request mentions Telegram bots, aiogram, telebot, custom/premium emoji, colored
-  buttons, rich messages, Telegram Stars, invoices or payment webhooks, subscriptions,
-  broadcasts, or reconning another bot. Read the matching reference/ files before writing code.
+  custom emoji (Bot API 9.4), colored inline buttons, rich HTML and Rich Messages (10.1+),
+  Telegram Stars and gateway payment webhooks, closed-channel subscriptions, broadcasts,
+  in-memory FSM steps, moderation, groups and forum topics, localization, deploy, plus Telethon
+  recon/QA of a bot. Use for ANY Telegram bot task — a /start or catalog screen, a shop, inline
+  keyboards and their colors, message formatting, payments — and for any "my bot misbehaves"
+  report: buttons stay grey, bold tags render literally, a start payload arrives empty, a
+  handler never fires. Requests often arrive in Russian: телеграм-бот, аиограм, кнопки, звёзды,
+  рассылка, подписка на канал, премиум эмодзи. Skip for Discord, VK, WhatsApp or Slack bots,
+  and Telegram work with no bot involved. Read the matching reference/ files before coding.
 ---
 
 # skill-tg — Telegram bot building kit
@@ -54,17 +55,16 @@ write code.
 1. **Formatting** — call your real `render()` on a template containing `<b>` plus an interpolated
    value containing `<`. The output must contain a real `<b>` tag (NOT `&lt;b&gt;`) and the value's
    `<` must become `&lt;`. Seeing `&lt;b&gt;` means you escaped the template — fix per *Rich text* below.
-2. **Design** — run every screen through the checklist in `reference/design-and-ux.md`: one
-   `success` button, nav in the last row, only title + key numbers bold, no bare paragraph.
-3. **Stars** — the invoice omits `provider_token`, uses `currency="XTR"`, and fulfillment is
-   idempotent on `telegram_payment_charge_id`.
+2. **Design** — run every screen through the checklist in `reference/design-and-ux.md`: ≤1
+   `success`, nav in the last row, only title + key numbers bold, no bare paragraph.
+3. **Stars** — invoice omits `provider_token`, uses `currency="XTR"`, fulfillment idempotent on `telegram_payment_charge_id`.
 
 ## Stack
 - **aiogram 3.x**, Python 3.12+, **SQLite**, aiohttp webhook server, systemd (long-polling).
 - One `Bot(token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))`, one `Dispatcher`.
-- Files: `bot.py` (all handlers) · `config.py` (settings/catalog/prices) · `db.py` (SQLite) ·
-  `keyboards.py` (inline kb) · `texts.py`+`texts_ru/en.py` (localized strings) ·
-  `emoji_map.py` (premium emoji) · `*_api.py` (each upstream) · `publish_legal.py` (telegra.ph docs).
+- Files: `bot.py` (handlers) · `config.py` (settings/catalog/prices) · `db.py` (SQLite) ·
+  `keyboards.py` (inline kb) · `texts.py`+`texts_ru/en.py` (localized) · `emoji_map.py` (premium
+  emoji) · `*_api.py` (each upstream) · `publish_legal.py` (telegra.ph docs).
 
 ## Screen design bar — do this on every screen
 A bot has no CSS; its design is layout + hierarchy + microcopy + emoji-as-icons + button
@@ -73,8 +73,9 @@ color/rows. Apply this or the bot reads as a debug dump, not a product:
   paragraph with buttons stuck under it.
 - **Bold the title and key numbers only** (`<b>`); long content → `<blockquote expandable>`.
 - Emoji are **icons, one per concept, reused** (⭐ Stars, 🛍 catalog, 💳 pay, ✅ success) — not confetti.
-- Buttons by role: **exactly one `success`** (the main action) per screen; `danger` for back-out/cancel;
-  `primary` for neutral nav. Primary action = its own full-width row; nav (Назад/Главная) = last row.
+- Buttons by role: **at most one `success`** (the main action) per screen — zero on a pure
+  list/menu screen; `danger` for back-out/cancel; `primary` for neutral nav. Primary action =
+  its own full-width row; nav (Назад/Главная) = last row.
 - Consistent terms + emoji across all screens. Empty/error states get a friendly line + a way forward.
 
 Full checklist + row/color rules: **`reference/design-and-ux.md`** — apply before finishing any screen.

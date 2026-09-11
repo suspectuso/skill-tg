@@ -31,7 +31,10 @@ Never send a bare unformatted paragraph with buttons stuck under it.
 ## Buttons — color roles and rows
 `style` is a role, not decoration. Assign by meaning:
 - **`success`** = the one main positive action of the screen (Купить, Оплатить, Подтвердить).
-  **Exactly one `success` per screen** — it's the eye's target.
+  **At most one `success` per screen** — it's the eye's target, so two of them means no target.
+  A screen that is a pure **list or menu** (a catalog of equivalent products, a settings index)
+  legitimately has **zero** `success`: promoting one arbitrary row would lie about which choice
+  matters. Give those screens `primary` rows plus the usual nav.
 - **`primary`** = neutral navigation / sections (Каталог, Профиль, next step).
 - **`danger`** = destructive or back-out (Отмена, Удалить); also fine for a plain Back.
 - Don't rainbow every button — a screen where everything is colored has no focus.
@@ -50,7 +53,8 @@ Row composition:
 
 ## Quality bar — check before finishing any screen
 - [ ] Title line with a leading emoji + `<b>`; body ≤ ~3 lines; blank line before buttons.
-- [ ] Exactly one `success` button; `danger` only for back-out/destructive; rest `primary`/none.
+- [ ] At most one `success` button (zero on a pure list/menu screen); `danger` only for
+      back-out/destructive; rest `primary`/none.
 - [ ] Navigation (Назад/Главная) present and in the last row.
 - [ ] Bold used on title + key numbers only; long content in an expandable blockquote.
 - [ ] Consistent terms + consistent emoji-per-concept across all screens.

@@ -1,5 +1,13 @@
 # Minimal shop skeleton — `/start` → catalog → product → Stars invoice
 
+## Contents
+- `config.py` — token, PREMIUM_EMOJI flag, catalog with Stars prices
+- `emoji_map.py` — `premiumize()` (never escapes)
+- `keyboards.py` — `cb()` button factory with `style`/`icon`, home/catalog/product keyboards
+- `bot.py` — `render()` pipeline, handlers, stepper, Stars invoice, pre_checkout, successful_payment
+- `db.py` — SQLite orders table with idempotent `record_order`
+- Notes — Stars needs no provider_token, stateless stepper, idempotency, premium-emoji default
+
 The smallest end-to-end wiring, so you scaffold in one read instead of composing 3 references.
 aiogram 3. Deeper pieces link out: buttons/emoji → `premium-emoji.md`, Stars → `stars-payments.md`,
 custom-quantity text step → `fsm.md`.
@@ -83,7 +91,11 @@ async def open_product(c):
 @dp.callback_query(F.data.startswith("q:"))
 async def qty(c):
     _, key, q = c.data.split(":"); q = max(1, int(q)); p = config.CATALOG[key]
-    await c.message.edit_reply_markup(reply_markup=k.product(key, q)); await c.answer()
+    # edit_text, not edit_reply_markup: the card's body shows qty/total too, and editing only
+    # the keyboard leaves the text saying "1 шт." while the button says 3 — a visible desync.
+    await c.message.edit_text(render("🛍 <b>{title}</b>\n\nЦена: <b>{price}</b> ⭐\nК оплате: <b>{total}</b> ⭐",
+                                     title=p['title'], price=p['price'], total=p['price'] * q),
+                              reply_markup=k.product(key, q)); await c.answer()
 
 @dp.callback_query(F.data == "noop")
 async def noop(c): await c.answer()
