@@ -1,5 +1,19 @@
 # Observability — metrics, logs, and reconstructing what happened
 
+## Contents
+- What to expose as metrics
+- aiogram middleware for the bot-level metrics
+- Go / prometheus/client_golang
+- Bot API call metrics — wrapping the client
+- Structured logging — the log line you need at 3 AM
+- `logfmt` for readable-in-terminal but still-machine-parseable output
+- Traces / correlation ids for external calls
+- The "user journey" query
+- Health check endpoint
+- Alerts — what to page on
+- Dashboards — Grafana starter panels
+- Common mistakes
+
 The 3 AM debugging question is "why did this user drop off / see nothing / get double-charged?".
 Answering it requires three things: metrics that tell you *what's* broken at a glance,
 structured logs that let you trace *one specific update* end-to-end, and enough state in the DB

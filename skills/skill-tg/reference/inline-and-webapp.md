@@ -1,5 +1,11 @@
 # Inline mode + Mini App (WebApp) — practical patterns
 
+## Contents
+- Inline mode with a big photo above the text
+- Mini App (WebApp) — hosting an external URL through your own loader
+- Validating `initData` — the Mini App auth boundary
+- Testing without your own device
+
 Two adjacent problems that hit any product bot: giving users a way to search-and-share your bot
 inline, and hosting an external booking/checkout URL that works inside Telegram's webview.
 

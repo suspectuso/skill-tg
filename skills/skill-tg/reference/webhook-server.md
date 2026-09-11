@@ -1,5 +1,16 @@
 # Payment webhook receiver — aiohttp / net/http
 
+## Contents
+- The generic shape (works for CryptoBot, xRocket, YooKassa, OxaPay, platega, etc.)
+- aiohttp template (Python)
+- Go net/http template
+- Signature verification — cheat-sheet
+- Idempotency — the two patterns that actually work
+- Async side effects — the "user got no notification" trap
+- Local testing without a public URL
+- Deployment shape
+- Common mistakes
+
 The counterpart to every non-Stars gateway: your bot exposes an HTTP endpoint that the payment
 processor calls once the user pays. Signature verification and idempotency are the two rules
 you can't skip.

@@ -1,5 +1,18 @@
 # OG preview image server
 
+## Contents
+- Two endpoints, one contract
+- The HTML page — minimum viable OG
+- The image endpoint — Pillow composition
+- Two-layer cache — hot memory + disk
+- Stale-fallback when upstream dies
+- The Telegram crawler's timeout budget
+- User-Agent split — the crawler-safe HTML
+- Rate-limit and per-domain preview throttling
+- When user-supplied media is a bad hero image
+- Systemd unit template
+- Common mistakes
+
 A small HTTP service that a bot or userbot sends links to, and Telegram's preview crawler
 scrapes to render the card above/below a message. Open this file when building the second
 half of a message-with-preview pipeline: the message-sending side is in

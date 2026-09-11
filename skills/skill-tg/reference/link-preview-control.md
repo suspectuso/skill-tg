@@ -1,5 +1,17 @@
 # Link preview control — Bot API and MTProto (userbot)
 
+## Contents
+- Which side controls what
+- MTProto: send a message with a controlled preview
+- The `optional` field on InputMediaWebPage
+- Preview arbitration when the text also contains URLs
+- Preview above vs below the text
+- Hosting the URL that Telegram will crawl
+- Telegram-side preview cache
+- Errors on `SendMediaRequest` with `InputMediaWebPage`
+- Bot API side quick reference
+- Common mistakes
+
 Two entirely different mechanisms for the same visual effect: the rich card above (or below) a
 text message. Open this file when a bot is skipping preview at random, when a userbot needs to
 force a preview from a URL that is not visible in the text, or when the preview keeps rendering

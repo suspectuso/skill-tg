@@ -1,5 +1,18 @@
 # Deep-links, start payloads, and BotFather command sync
 
+## Contents
+- Deep-link anatomy
+- Building payloads that fit 64 chars
+- Parsing on `/start`
+- Mini App deep links (`startapp`)
+- Generating links from the bot for sharing
+- BotFather sync — commands, name, description
+- Menu button — the alternative to `/commands`
+- Command handlers vs. text handlers — ordering
+- Referral links — the piece that ties this to `subscriptions.md`
+- Copy-links inside messages (monospace deep-link)
+- Common mistakes
+
 Two adjacent boundaries that every bot has: how users enter (`/start` with parameters, deep
 links) and how the bot advertises what it does (`/setcommands`, description, name, short
 description in @BotFather).

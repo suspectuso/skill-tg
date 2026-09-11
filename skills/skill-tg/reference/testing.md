@@ -1,5 +1,22 @@
 # Testing bots with a Telethon user session (locally and in CI)
 
+## Contents
+- Two kinds of tests, keep them separate
+- One-time: create a session file
+- When `my.telegram.org` is unavailable
+- Login geography
+- Code delivery
+- Session file — the locking rule
+- Test-user pattern for E2E
+- Clicking buttons — the exact wire behaviour
+- Asserting rich features
+- Running the bot under test
+- Running in CI (GitHub Actions example)
+- Rate-limits — what CI has to do to survive
+- Fixture: reset DB between tests
+- Session for one-off verification (not tests)
+- Common mistakes
+
 The bot's own logs show what it *tried* to do. Only a real client-side view — a user session
 against the same Telegram servers — shows what actually shipped: button styles, custom emoji,
 rich blocks, link previews. This file covers how to run that view for local dev and in CI.

@@ -1,12 +1,15 @@
 ---
 name: skill-tg
 description: >
-  Build, extend, or debug a Telegram bot (aiogram 3 / Go telebot.v3): premium custom emoji
-  (Bot API 9.4), colored inline buttons, rich HTML + Rich Messages (10.1+), Telegram Stars and
-  webhook payments, closed-channel subscriptions, broadcasts, FSM flows, moderation,
-  groups/forum-topics, localization, deploy, and cloning or QA-ing a bot via a Telethon session.
-  Invoke on any Telegram bot task, or when one mentions custom/premium emoji, colored buttons,
-  rich messages, Stars or webhook payments, subscriptions, broadcasts, or reconning another bot.
+  Builds, extends, and debugs production Telegram bots (aiogram 3 / Go telebot.v3): premium
+  custom emoji (Bot API 9.4), colored inline buttons, rich HTML + Rich Messages (10.1+),
+  Telegram Stars and webhook payments, closed-channel subscriptions, broadcasts, in-memory FSM
+  flows, moderation, groups/forum-topics, localization, deploy, and cloning or QA-ing a bot via
+  a Telethon session. Use this skill for ANY Telegram bot task — building a bot or shop, a
+  /start or catalog screen, an inline keyboard, formatting a message, or wiring payments — and
+  whenever the request mentions Telegram bots, aiogram, telebot, custom/premium emoji, colored
+  buttons, rich messages, Telegram Stars, invoices or payment webhooks, subscriptions,
+  broadcasts, or reconning another bot. Read the matching reference/ files before writing code.
 ---
 
 # skill-tg — Telegram bot building kit
@@ -16,6 +19,45 @@ Distilled from building production Telegram bots on two stacks: **aiogram 3 + Py
 9.4 coloured buttons / custom emoji, Bot API 10.1 Rich Messages, `link_preview_options`) is
 delivered via a Raw call because neither library wraps them natively yet. Concrete patterns and
 verified schemas live in `reference/`.
+
+## Using this skill — read before coding
+SKILL.md is only the index. **The patterns that make a bot correct and make it look intentional
+live in `reference/` — skipping them is exactly why a bot ends up with literal `<b>` tags, no
+design, and no premium emoji.** For the task at hand, open the matching files *fully* first, then
+write code.
+
+| Task | Read first (fully) |
+|---|---|
+| Any bot / shop from scratch | `reference/minimal-shop.md` + `reference/design-and-ux.md` |
+| Message text, bold, blockquote formatting | `reference/premium-emoji.md` (the escaping rule) |
+| Premium/custom emoji, colored buttons | `reference/premium-emoji.md` (+ `emoji-pack.md`) |
+| Telegram Stars / invoices | `reference/stars-payments.md` |
+| Non-Stars gateway (CryptoBot/xRocket/…) | `reference/webhook-server.md` |
+| Private-channel subscription | `reference/subscriptions.md` |
+| Free-text input step (amount, promo) | `reference/fsm.md` |
+| Broadcast / mailing | `reference/broadcast.md` |
+| Groups / topics / moderation | `reference/groups-and-topics.md` + `reference/moderation-and-antispam.md` |
+| Rich Messages (tables / carousel) | `reference/rich-messages.md` |
+| Inline mode / Mini App | `reference/inline-and-webapp.md` |
+| Cloning / QA another bot | `reference/recon.md` + `reference/session-qa.md` |
+| Go / telebot stack | `reference/go-telebot.md` |
+
+**Build checklist — copy into your reply and tick as you go:**
+
+    - [ ] Read the reference file(s) for this task above, not just SKILL.md
+    - [ ] Scaffold from reference/minimal-shop.md (render/escape pipeline + button factory)
+    - [ ] Apply the Screen design bar to EVERY screen (reference/design-and-ux.md)
+    - [ ] Premium emoji stays PREMIUM_EMOJI=off + empty GLYPH_TO_ID unless you hold real ids AND a Premium owner account
+    - [ ] Self-verify (below) before saying you're done
+
+**Self-verify before finishing (validator → fix → repeat):**
+1. **Formatting** — call your real `render()` on a template containing `<b>` plus an interpolated
+   value containing `<`. The output must contain a real `<b>` tag (NOT `&lt;b&gt;`) and the value's
+   `<` must become `&lt;`. Seeing `&lt;b&gt;` means you escaped the template — fix per *Rich text* below.
+2. **Design** — run every screen through the checklist in `reference/design-and-ux.md`: one
+   `success` button, nav in the last row, only title + key numbers bold, no bare paragraph.
+3. **Stars** — the invoice omits `provider_token`, uses `currency="XTR"`, and fulfillment is
+   idempotent on `telegram_payment_charge_id`.
 
 ## Stack
 - **aiogram 3.x**, Python 3.12+, **SQLite**, aiohttp webhook server, systemd (long-polling).
@@ -179,13 +221,9 @@ breaks:
    locks on Telegram-side latency; a raise on the notify rolls back the payment. Commit,
    then best-effort notify.
 
-Per-gateway details (which header, what's signed, what secret): CryptoBot →
-`Crypto-Pay-API-Signature` over raw body, secret = Bot API token; xRocket → `rocket-pay-signature`
-over raw body, secret = app-specific from dashboard; OxaPay → `HMAC` over raw body, secret =
-merchant API key; YooKassa → **IP allowlist (5 `/24` ranges) + HTTP Basic** with
-`shopId:secretKey`; platega → `X-Signature-Sha256` over `body+secret` concat. Nginx in front
-with `proxy_pass http://127.0.0.1:8080`; app binds `127.0.0.1` only. See
-`reference/webhook-server.md` for aiohttp + Go templates and local testing via cloudflared.
+Per-gateway details (which header, what's signed, what secret — CryptoBot / xRocket / OxaPay /
+YooKassa / platega), the aiohttp + Go templates, nginx-in-front (`proxy_pass 127.0.0.1`), and
+local testing via cloudflared: `reference/webhook-server.md`.
 
 ## In-memory FSM for text-input flows
 When a callback opens "expects free-form text next" (amounts, usernames, promo codes), you need
@@ -222,28 +260,20 @@ subscribers on expiry. Non-obvious bits worth internalising:
   Telegram's "remove for now" idiom.
 - **`OnChatJoinRequest` after a kick:** don't auto-approve — require a fresh purchase, otherwise
   the "Join channel" button rewards a kicked user with free access.
-- **Referrals**: 10% of plan days on subscription, milestone bonus every N referrals; 30% of
-  top-up amount to the referrer's balance only if their subscription is currently active.
-- **Promo codes** in two flavours (`days` = instant grant, `percent` = discount for the next
-  purchase). `(user_id, promo_id) UNIQUE` — one code per user. Increment `promo_codes.uses` in
-  the same transaction as inserting into `promo_uses`, never separately.
-- **Text-input FSM is in-memory** (`{uid: state}` map). Process restart wipes it — that's fine,
-  users just retap. Don't persist FSM state unless a step is expensive to redo.
+- **Referrals & promo codes**: referral days/milestones + `(user_id, promo_id) UNIQUE` (one code
+  per user, increment `promo_codes.uses` in the same tx as the `promo_uses` insert) — full
+  formulas and the validation ladder in the reference.
 
 See `reference/subscriptions.md` for the full data model, purchase flow, scheduler pseudocode,
 promo validation ladder, referral bonus formulas, and admin-panel screens.
 
 ## Media caching (file_id) and the 50 MB upload cap
-Bot API caps a single-file upload at **50 MB** and re-uploading the same asset on every send is
-wasteful. On first send, capture the `file_id` returned by Telegram, keep it in a `meta(key,
-value)` table keyed by `fileid:<local_rel_path>`, always send by `file_id` after. `file_id` is
-bot-scoped and stable across chats; if the bot token rotates, clear the cache.
-
-`sendRichMessage` with a `photo` / `slideshow` block also requires a `file_id` for the `media`
-field in practice — URL fallback re-fetches every render. Warm up new content packs with a
-one-shot upload → capture → delete script before shipping.
-
-See `reference/media-and-deploy.md` for the warm-up recipe plus the deploy hazards below.
+Bot API caps a single-file upload at **50 MB**; re-uploading the same asset every send is wasteful.
+On first send, capture the returned `file_id` into a `meta(key,value)` table keyed by
+`fileid:<local_rel_path>` and send by `file_id` after (bot-scoped, stable across chats; clear the
+cache if the token rotates). `sendRichMessage` `photo`/`slideshow` blocks also need a `file_id`
+for `media` — URL fallback re-fetches every render, so warm up new packs with a one-shot
+upload→capture→delete script. See `reference/media-and-deploy.md`.
 
 ## Deploy hazards (both stacks)
 - **macOS `tar` bundles AppleDouble `._*` sidecars** next to your media. Uploaders pick them up
@@ -360,9 +390,8 @@ See `reference/local-bot-api.md`.
 ## Localization (RU/EN/UA) without touching call sites
 `import texts as T` and keep `render(T.KEY, **kw)`. Make `texts.py` a dispatcher: a `ContextVar`
 `current_lang` + `def __getattr__(name)` that returns from `texts_ru`/`texts_en`/`texts_ua`
-(fallback to RU). An aiogram outer-middleware sets
-`texts.current_lang.set(db.get_lang(uid) or "ru")` per update. The language screen shown before a
-choice is multilingual (buttons in all three languages at once). See `reference/localization.md`.
+(fallback to RU). An aiogram outer-middleware sets `texts.current_lang.set(db.get_lang(uid) or "ru")` per update.
+The pre-choice language screen is multilingual (buttons in all three at once). See `reference/localization.md`.
 
 ## Deploy
 `scp *.py server:/root/app/` → `ssh server 'systemctl restart <svc>'` → commit+push. Secrets live
@@ -432,87 +461,40 @@ becomes `blockquote` + `blocks`; a bare string in a text array is literal text, 
 Full verified schema + Go-specific traps: `reference/go-telebot.md` and `reference/rich-messages.md`.
 
 ## Reference files
+One-line index; the task→file routing is in *Using this skill* at the top. Every file links
+directly from here (one level deep) — read the whole file, don't skim it.
 
-**Start here (scaffolding)**
-- `reference/minimal-shop.md` — copy-paste `/start → catalog → product card → Stars invoice`
-  skeleton with the correct render/escape pattern (templates keep `<b>`, values are escaped) and
-  the button factory. Build from this first, then pull the deep-dives below for each piece.
-- `reference/design-and-ux.md` — the screen design bar: layout, text hierarchy, microcopy, emoji
-  as icons, button color roles + row composition, states, and a per-screen quality checklist.
-  Apply on every screen so the bot looks intentional, not default.
+**Scaffolding** — `minimal-shop.md` (`/start → catalog → product → Stars invoice` skeleton with
+the render/escape pipeline + button factory; build from this first) · `design-and-ux.md` (the
+screen design bar + per-screen quality checklist; apply on every screen).
 
-**Emoji & rich content**
-- `reference/premium-emoji.md` — `premiumize()`, `GLYPH_TO_ID`, button factory, id-finding.
-- `reference/emoji-pack.md` — copy emoji into your own @Stickers pack, get new ids.
-- `reference/rich-messages.md` — Bot API 10.1 Rich Messages: verified block schema, silent
-  schema-ignore trap, `details` header trick, `slideshow` carousel, media block double-nesting,
-  edit-in-place recipe.
-- `reference/inline-and-webapp.md` — inline mode with an OG-preview big photo; Mini App loader
-  that bypasses Telegram-webview cookie partitioning via top-level redirect; server-side
-  `initData` HMAC verification.
-- `reference/media-groups.md` — classic albums: 2..10 items, caption-on-first rules, no
-  `reply_markup`, buffered receive by `media_group_id`, plural forward/copy/delete methods.
+**Emoji & rich content** — `premium-emoji.md` (`premiumize()`, `GLYPH_TO_ID`, button factory,
+id-finding, the escaping rule) · `emoji-pack.md` (own your emoji pack, get new ids) ·
+`rich-messages.md` (Bot API 10.1 block schema, silent-ignore trap, `details`/`slideshow`,
+edit-in-place) · `inline-and-webapp.md` (inline OG-preview big photo; Mini App loader + `initData`
+HMAC) · `media-groups.md` (albums: 2..10 items, caption-on-first, no `reply_markup`, buffered receive).
 
-**Payments**
-- `reference/stars-payments.md` — Telegram Stars (XTR): `sendInvoice` shape (no
-  `provider_token`), `pre_checkout_query` (10 s timeout), `successful_payment` with
-  `telegram_payment_charge_id` idempotency, `refundStarPayment`, gift + star-balance APIs.
-- `reference/webhook-server.md` — aiohttp + Go net/http templates for gateway webhooks;
-  per-gateway signature table (CryptoBot / xRocket / OxaPay / YooKassa / platega), idempotent
-  UPDATE with `RETURNING`, DB-commit-before-notify, cloudflared local testing.
-- `reference/subscriptions.md` — closed-channel subscription flow: schema, purchase flow,
-  webhook idempotency, scheduler for expiry warnings and kick+unban, referral bonuses, promo
-  codes, in-memory FSM, admin panel.
+**Payments** — `stars-payments.md` (XTR `sendInvoice` with no `provider_token`, `pre_checkout`
+10 s, `telegram_payment_charge_id` idempotency, refunds) · `webhook-server.md` (aiohttp + Go
+gateway webhooks, per-gateway signature table, idempotent `UPDATE … RETURNING`, commit-before-notify)
+· `subscriptions.md` (closed-channel flow: schema, scheduler, kick+unban, referrals, promo codes).
 
-**Bot mechanics**
-- `reference/fsm.md` — in-memory FSM: aiogram `MemoryStorage` + `FSMContext`, Go
-  `map[int64]State` with `sync.RWMutex`, timeout middleware, ordering trap with generic text
-  handlers.
-- `reference/webhook-vs-polling.md` — long-polling vs webhook trade-off, `allowed_updates`,
-  `drop_pending_updates`, `secret_token`, migration between modes, `getWebhookInfo` alerting.
-- `reference/deep-links-and-commands.md` — `?start=<payload>` and `?startapp=<payload>`
-  parsing, 64-char limit and payload encodings, `setMyCommands` scopes, `setMyName` /
-  `setMyDescription` / `setMyShortDescription` sync-from-code pattern.
-- `reference/broadcast.md` — mass messaging without breaking: rate limits (~20 msg/s safe),
-  chunking, error classification (blocked/deactivated/RetryAfter/network), resume-safe
-  `broadcast_sends` UNIQUE, live progress reporter, pause/cancel, groups vs users rates.
-- `reference/groups-and-topics.md` — bot in groups/supergroups: privacy mode, admin rights
-  matrix, `chat_member` + `my_chat_member`, forum topics (`message_thread_id`,
-  `create_forum_topic`), support-desk-as-topics pattern, ban+unban idiom.
-- `reference/moderation-and-antispam.md` — layered defense: join captcha with timeout task,
-  new-member `trust_level` ramp, regex content filters + zero-width-char handling, `/report`
-  → admin chat with action buttons, cross-chat ban ledger.
+**Bot mechanics** — `fsm.md` (in-memory FSM + timeout middleware + text-handler ordering trap) ·
+`webhook-vs-polling.md` (trade-off, `allowed_updates`, `secret_token`, `getWebhookInfo`) ·
+`deep-links-and-commands.md` (`?start=`/`?startapp=` encodings + 64-char limit, `setMyCommands`
+scopes) · `broadcast.md` (rate limits, error classification, resume-safe `broadcast_sends`) ·
+`groups-and-topics.md` (privacy mode, admin-rights matrix, forum topics, ban+unban) ·
+`moderation-and-antispam.md` (join captcha, `trust_level` ramp, content filters, `/report`, ban ledger).
 
-**Media & ops**
-- `reference/media-and-deploy.md` — `file_id` caching pattern, ffmpeg fit-under-50MB
-  one-liner, macOS AppleDouble trap, safe `rsync` deploy form, SSH heredoc escape hell,
-  session-file locking.
-- `reference/local-bot-api.md` — self-hosted Bot API server for >50MB uploads / >20MB
-  downloads, migration via `logOut`/`close`, `--local` filesystem mode, storage cleanup.
-- `reference/observability.md` — Prometheus metrics (Python + Go middlewares),
-  structured JSON/logfmt logs with `update_id`/`user_id`/`chat_id` context via
-  `contextvars`, trace-id propagation, dashboard starter panels, alerting rules.
+**Media & ops** — `media-and-deploy.md` (`file_id` cache, ffmpeg fit-50MB, AppleDouble trap, safe
+`rsync`) · `local-bot-api.md` (self-hosted server for >50MB, `logOut` migration, `--local` mode) ·
+`observability.md` (Prometheus metrics, structured logs, alerting).
 
-**Testing & recon**
-- `reference/recon.md` — full Telethon recon driver + gotchas.
-- `reference/session-qa.md` — using the session to verify/QA your own bot and check live data.
-- `reference/userbot-forwarder.md` — long-running MTProto mirrors and screeners: events +
-  pull-loop delivery, restart flood guards (age ceiling, offset bootstrap), dedup keys,
-  read-side flood limits, one process-wide limiter for external APIs, staleness alerting.
-- `reference/testing.md` — E2E testing via Telethon user session in CI: session file
-  creation, `my.telegram.org` fallbacks, login geography, QR login, pytest fixtures, GitHub
-  Actions workflow, DB reset per test.
+**Testing & recon** — `recon.md` (Telethon recon driver + gotchas) · `session-qa.md` (QA your own
+bot / check live data) · `reference/userbot-forwarder.md` (long-running MTProto mirrors, flood
+guards, dedup) · `testing.md` (E2E via Telethon in CI: fixtures, GitHub Actions, DB reset).
 
-**Localization & stacks**
-- `reference/localization.md` — the language dispatcher + middleware (RU/EN/UA).
-- `reference/go-telebot.md` — the Go + telebot.v3 stack: Raw-API pattern, Rich Messages send
-  schema vs. docs, keyboard-marshalling traps (`switch_inline_query_current_chat` /
-  `Unique` vs `Data`), known-working default premium emoji IDs with a full send/edit example,
-  verification via a user session. **Also the UI playbook**: button colour semantics (one
-  `success` per screen, `danger` reserved for Back), row layout, premium-emoji composition
-  rules, Rich-Messages screen structure, collapsing long text (expandable blockquote vs
-  details), and a symptom→cause table of common Bot API mistakes.
-- `reference/link-preview-control.md` — `LinkPreviewOptions`: disable, prefer small/large,
-  pick which URL to preview, show above/below text.
-- `reference/preview-image-server.md` — serving OG-preview images so links render a big photo
-  (crawler needs a public HTTPS URL; local dev via ngrok / cloudflared).
+**Localization & stacks** — `localization.md` (RU/EN/UA dispatcher + middleware) · `go-telebot.md`
+(Go + telebot.v3: Raw-API pattern, Rich Messages send schema, keyboard-marshalling traps, default
+premium-emoji ids, **and the UI playbook** — colour semantics, rows, symptom→cause table) ·
+`reference/link-preview-control.md` (`LinkPreviewOptions`) · `reference/preview-image-server.md` (OG-preview images).

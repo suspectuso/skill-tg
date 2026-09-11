@@ -1,5 +1,15 @@
 # Webhook vs long-polling — receiving Bot updates
 
+## Contents
+- The trade-off, without the marketing
+- Long-polling — the shape
+- Webhook mode — the shape
+- Migration: long-polling → webhook (or reverse)
+- Local development for a webhook bot
+- Debugging a silent webhook
+- Ordering guarantees
+- Common mistakes
+
 Two ways to receive updates from Telegram. Same Bot API, very different failure modes.
 
 ## The trade-off, without the marketing

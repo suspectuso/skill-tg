@@ -1,5 +1,23 @@
 # Go + telebot.v3 — the second stack
 
+## Contents
+- Raw API on top of telebot — the general recipe
+- Coloured buttons + premium emoji via Raw
+- Rich Messages (Bot API 10.1) via Raw
+- Two traps that cost a deploy each
+- Migrations list is not auto-discovered
+- Verifying live via a user session
+- Retrying a rate-limited call
+- Throttling edits
+- Deploy
+- Button colour semantics — pick one and hold it
+- Layout — one button per row by default
+- Premium emoji — two different mechanisms
+- Regular emoji — composition rules
+- Rich Messages screen layout
+- Common errors
+- Long text — collapse, don't cut
+
 Everything the main `SKILL.md` describes for aiogram/Python also has a Go implementation using
 **`gopkg.in/telebot.v3`**. Same tricks (premium emoji, coloured buttons, recon via Telethon),
 different mechanics: **telebot doesn't know a single Bot API feature newer than 9.3**, so every

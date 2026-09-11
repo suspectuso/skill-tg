@@ -1,5 +1,19 @@
 # Userbot mirrors and screeners (long-running MTProto services)
 
+## Contents
+- Why a user session at all
+- Delivery: events are necessary but not sufficient
+- The restart problem
+- Deduplication
+- Read-side flood limits
+- Keeping the account healthy
+- Screeners that also call an external API
+- Monitoring
+- Losing access to one source
+- `chat.username` disappears for fragment / collectible names
+- Fire-and-forget enrichment on the hot path
+- Common mistakes
+
 A different class of service from a command bot: a Telethon user session that watches many
 chats around the clock and republishes what matches. Open this for mirrors, feed aggregators,
 on-chain/price screeners — anything that must not miss a message and must not flood on restart.

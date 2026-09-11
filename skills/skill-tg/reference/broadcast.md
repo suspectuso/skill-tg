@@ -1,5 +1,17 @@
 # Mass broadcasts — rate limits, chunking, error handling
 
+## Contents
+- The rate limits you must respect
+- The `users` table you need
+- The `broadcasts` table for run tracking
+- aiogram broadcaster with concurrency + FloodWait handling
+- Progress reporting to the admin
+- The pause/cancel button
+- Preview + confirm before sending
+- Reconciliation after a run
+- Broadcast to groups (chats, not users)
+- Common mistakes
+
 Sending one message to every user of the bot is deceptively simple. Six things make it hard:
 Telegram's rate limits, users who blocked / deleted their account since signup, users who never
 started the bot, media uploads that take orders of magnitude longer than text, retry after

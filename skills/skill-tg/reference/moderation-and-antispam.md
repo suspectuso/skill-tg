@@ -1,5 +1,18 @@
 # Moderation and anti-spam for group / community bots
 
+## Contents
+- The layers, in order of catch-rate
+- Layer 1: join-time captcha
+- Layer 2: new-member restrictions (trust-level ramp)
+- Layer 3: content filters (regex + heuristics)
+- Layer 4: user reports
+- Layer 5: ban ledger
+- Trap: bots joining as bots
+- Traps that eat your delete privilege
+- The report chat pattern (support desk in reverse)
+- Rate-limit yourself, or Telegram will
+- Common mistakes
+
 The spam problem in Telegram groups: bots trying to sell scams, forwarded ads, invite-link
 floods from throw-away accounts. Effective moderation is layered — nothing single blocks
 everything, but the layers compound.

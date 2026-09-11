@@ -1,5 +1,16 @@
 # Media handling + deploy hazards
 
+## Contents
+- file_id caching — the mandatory pattern
+- Rich slideshow needs file_ids
+- macOS `tar` and the AppleDouble trap
+- Video compression under the 50 MB limit
+- `rsync` deploy — the `.env` obliteration
+- SSH heredocs, escape hell, and the fix
+- Two bot processes, one token = intermittent style loss
+- Fresh MTProto session vs. long-lived bot session
+- Reboot / systemd checklist for the bot
+
 Traps that don't fit anywhere else but ruin a deploy each. Read once, remember forever.
 
 ## file_id caching — the mandatory pattern

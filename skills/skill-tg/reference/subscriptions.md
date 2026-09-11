@@ -1,5 +1,19 @@
 # Subscription bots — the full closed-channel flow
 
+## Contents
+- Data model (Postgres)
+- Purchase flow
+- Balance top-up + payment webhooks
+- Scheduler — expiry warnings and auto-kick
+- Referral system
+- Promo codes
+- In-memory FSM for text inputs
+- Admin panel
+- Kick + rejoin logic — the two subtle bugs
+- Deploy notes
+- RU/EN/UA (three languages, not two)
+- Not covered here
+
 Model: Go + telebot.v3 + PostgreSQL bot that gates access to a private Telegram channel, with
 paid plans (monthly / yearly), balance top-up via CryptoBot / xRocket / other Bot-API-compatible
 gateways, referral bonuses, promo codes, and a scheduler for expiry warnings and auto-kick.

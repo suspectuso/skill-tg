@@ -1,5 +1,18 @@
 # Self-hosted Telegram Bot API server
 
+## Contents
+- When it's worth the operational cost
+- Running it
+- Migrating a bot from public → local
+- Pointing your code at the local server
+- Uploading a >50 MB file
+- Downloading a >20 MB file
+- Cleanup — the bot-api server never deletes files
+- Webhook via the local server
+- Cost model
+- Two-server split (public + local) for one bot
+- Common mistakes
+
 The public `api.telegram.org` caps every bot at:
 
 - 50 MB file upload (`sendPhoto`, `sendVideo`, `sendDocument`, `sendAudio`).

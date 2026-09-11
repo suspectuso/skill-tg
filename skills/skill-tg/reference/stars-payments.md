@@ -1,5 +1,15 @@
 # Telegram Stars — native in-app payments
 
+## Contents
+- Wire-level shape
+- Building the invoice
+- Handling `pre_checkout_query`
+- Handling `successful_payment` — the fulfillment
+- Refunds
+- Balance top-up vs direct purchase
+- Star gifts / paid reactions (Bot API 8.x)
+- Common mistakes
+
 Stars (XTR) is Telegram's native currency for digital goods. It's the only gateway that doesn't
 need a third-party webhook: Telegram itself carries the whole flow through the Bot API. Since
 2024 Telegram's policy requires Stars for **digital** goods and services (subscriptions, media

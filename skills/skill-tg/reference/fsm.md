@@ -1,5 +1,13 @@
 # In-memory FSM for text inputs (aiogram + Go/telebot.v3)
 
+## Contents
+- aiogram 3 — built-in FSMContext with `MemoryStorage`
+- The generic-text handler trap
+- Timeout / abandonment
+- Go / telebot.v3 — a hand-rolled equivalent
+- When to reach for persistent state (Redis / DB) instead
+- Common mistakes
+
 Bots have flows where the user taps a button, then the bot expects a free-form message next
 (amount, username, promo code, custom text). That "next message" gate is FSM. For 90% of bots
 you don't need Redis / a BoltDB — a per-process map keyed by telegram id is enough.

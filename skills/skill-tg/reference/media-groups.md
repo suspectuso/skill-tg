@@ -1,5 +1,16 @@
 # Media groups (albums) — sending, receiving, editing
 
+## Contents
+- Sending an album
+- Receiving an album — the "wait ~1 second" trick
+- Forwarding / copying an album
+- Editing an album
+- Deleting an album
+- `file_id` caching for albums
+- Rich `slideshow` vs. classic album
+- Deployment tips
+- Common mistakes
+
 Telegram "albums" are `MediaGroup`s: 2..10 media items delivered as one visually-grouped
 message. They look like one message but are technically **N separate messages** with the same
 `media_group_id` — that quirk drives every gotcha in this file.

@@ -1,5 +1,19 @@
 # Bots in groups, supergroups, and forum topics
 
+## Contents
+- Chat types you'll deal with
+- Privacy mode — the setting that hides half the updates
+- Getting the bot in
+- Tracking membership: `ChatMemberUpdated`
+- The old `new_chat_members` event still fires
+- Admin permissions matrix
+- Sending into a specific topic (forum groups)
+- Chat action / typing indicator
+- Slow-mode and moderation basics
+- Sending as the anonymous admin
+- Linked channel + discussion group
+- Common mistakes
+
 Almost every group/community bot has three concerns: getting the bot in, tracking who's in
 the group, and posting into the right sub-place (a topic, a thread, a specific admin channel).
 This file covers the primitives that don't map cleanly to what a DM bot looks like.

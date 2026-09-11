@@ -1,5 +1,17 @@
 # Rich Messages — Bot API 10.1
 
+## Contents
+- Block types (verified `type` values)
+- Text runs (inside heading/paragraph text arrays)
+- Media blocks — the double-nested photo shape
+- Slideshow (swipeable carousel)
+- `details` — the collapsible section
+- `blockquote` — wraps other blocks
+- Centring text — only via table cells
+- The silent-schema-ignore trap
+- Verifying rich
+- Minimal recipe: an edit-in-place item card
+
 Empirically verified against the live API. Language-agnostic:
 the wire format is JSON, send it via aiogram `bot.session.request` / telebot `b.Raw` / net/http
 directly. **The public docs are wrong or incomplete about several block fields** — trust this file
