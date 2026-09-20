@@ -5,12 +5,16 @@
   <a href="mailto:dev@suspectus.ru"><img src="https://raw.githubusercontent.com/suspectuso/suspectuso/9b84055845032c59df728478bbf1cffc65d0b422/assets/contact-email.svg" width="160" height="56" alt="Email: dev@suspectus.ru" /></a>
 </p>
 
+<img src="https://raw.githubusercontent.com/suspectuso/suspectuso/d5ef42d77eaf4ee10f4c0225b18445600c2b8359/assets/divider-mint.svg" width="100%" alt="" />
+
 # skill-tg
 
 An installable **Claude Code plugin** for building and shipping production **Telegram bots**.
 Install it and the agent uses it automatically when a Telegram bot task comes up.
 
 Reference implementation (a full, sanitized shop-bot): **https://github.com/suspectuso/TelegramShop**
+
+<img src="https://raw.githubusercontent.com/suspectuso/suspectuso/d5ef42d77eaf4ee10f4c0225b18445600c2b8359/assets/divider-mint.svg" width="100%" alt="" />
 
 ## Install
 
@@ -25,6 +29,8 @@ In an interactive `claude` terminal:
 For other agents (Codex CLI etc.) the skill is a plain `SKILL.md` under `skills/skill-tg/` —
 point your agent at this repo or drop the folder into its skills directory.
 
+<img src="https://raw.githubusercontent.com/suspectuso/suspectuso/d5ef42d77eaf4ee10f4c0225b18445600c2b8359/assets/divider-mint.svg" width="100%" alt="" />
+
 ## What's inside — skill `skill-tg`
 
 The build playbook for a Telegram bot on **aiogram 3** or **Go/telebot**:
@@ -38,13 +44,19 @@ The build playbook for a Telegram bot on **aiogram 3** or **Go/telebot**:
 
 Deep-dive material lives under `skills/skill-tg/reference/` — the skill links only what a task needs.
 
+<img src="https://raw.githubusercontent.com/suspectuso/suspectuso/d5ef42d77eaf4ee10f4c0225b18445600c2b8359/assets/divider-mint.svg" width="100%" alt="" />
+
 ## Contributing
 
 Patterns, not content — see [CONTRIBUTING.md](CONTRIBUTING.md). Keep it clean: no tokens, IPs,
 server paths, session files, or private handles.
 
+<img src="https://raw.githubusercontent.com/suspectuso/suspectuso/d5ef42d77eaf4ee10f4c0225b18445600c2b8359/assets/divider-mint.svg" width="100%" alt="" />
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+<img src="https://raw.githubusercontent.com/suspectuso/suspectuso/d5ef42d77eaf4ee10f4c0225b18445600c2b8359/assets/divider-mint.svg" width="100%" alt="" />
 
 <img src="https://raw.githubusercontent.com/suspectuso/suspectuso/9b84055845032c59df728478bbf1cffc65d0b422/assets/profile-closing-matched.png" width="100%" alt="Let’s build something — mascot waving goodbye" />
